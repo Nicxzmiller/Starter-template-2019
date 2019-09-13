@@ -70,20 +70,48 @@ var button = document.getElementById("enter");
 var input = document.getElementById("userinput");
 var ul = document.querySelector("ul");
 
-button.addEventListener("click", function(){
-    if(input.value.length > 0){
-        var li = document.createElement("li");
-    li.appendChild(document.createTextNode(input.value));
-    ul.appendChild(li);
-    input.value = "";
-    }
-})
+function inputLength(){
+    return input.value.length;
+}
 
-input.addEventListener("keypress", function(){
-    if(input.value.length > 0 && event.keyCode === 13){
-        var li = document.createElement("li");
+function createListElement(){
+    var li = document.createElement("li");
     li.appendChild(document.createTextNode(input.value));
     ul.appendChild(li);
-    input.value = "";
-    }
-})
+    // input.value = "";
+
+    li.addEventListener("click", function(){
+        var done = this.classList.toggle("done");
+        var deleteButton = document.createElement("button");
+        deleteButton.classList.add("removeButton");
+
+        if(done){
+            deleteButton.appendChild(document.createTextNode("remove"));
+            deleteButton.classList = "removeButton";
+            li.appendChild(deleteButton);
+
+            deleteButton.addEventListener("click", function(){
+                this.parentElement.remove();
+            });
+        }else{
+            this.getElementsByClassName("removeButton")[0].remove();
+        }
+    })
+    input.value="";
+}
+
+function addListAfterCLick(){
+        if(inputLength() > 0){
+            createListElement();
+        }
+}
+
+function addListAfterPressKey(event){
+        if(inputLength() > 0 && event.keyCode === 13){
+            createListElement();
+        }
+}
+
+button.addEventListener("click", addListAfterCLick);
+
+input.addEventListener("keypress", addListAfterPressKey);
